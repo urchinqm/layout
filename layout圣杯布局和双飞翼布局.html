@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>layout 圣杯布局</title>
+	<style>
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	#page{  /* 父容器设置padding值*/
+		height: 200px;
+		padding-left: 190px;
+		padding-right: 230px;	
+	}
+	.main{
+		float: left;  /*三个元素都要左浮动*/
+		width: 100%;  /*自适应，宽度为100%*/
+		height: 200px;
+		background-color: red;
+	
+	}
+	.sub{
+		float: left;   /*三个元素都要左浮动*/
+		width: 190px;
+		height: 200px;
+		margin-left: -100%; 
+		 /*margin 的百分比值参照其包含块的宽度进行计算，书写模式变成纵向的时候，其参照将会变成包含块的高度*/
+
+		position: relative; 
+		/*为了解决”中间栏div内容不被遮挡“问题，将左右两个div用相对布局position: relative并分别配合right和left属性，以便左右两栏div移动后不遮挡中间div*/
+
+		left: -190px;
+		background-color: yellow;
+	}
+	.extra{
+		float: left;   /*三个元素都要左浮动*/
+		width: 230px;
+		height: 200px;
+		margin-left: -230px;
+		position: relative;
+		right: -230px;
+		background-color: blue;
+	}
+	</style>
+</head>
+<body>
+	<div id="page">
+		<div class="main">我是主列</div>
+		<div class="sub">我是子列</div>
+		<div class="extra">我是附加列</div>
+	</div>
+	<!-- 以上为圣杯布局，
+
+	双飞翼布局：
+	与圣杯布局的不同之处：
+	为了中间div内容不被遮挡，直接在中间div内部创建子div用于放置内容，在该子div里用margin-left和margin-right为左右两栏div留出位置。 -->
+</body>
+</html>
