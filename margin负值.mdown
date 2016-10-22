@@ -1,3 +1,177 @@
 # margin负值产生的影响和常见布局应用
 ## margin负值的影响
-### 对自身的影响
+### 对自身的影响（在普通文档流中）
+1. 当元素不存在width属性或者（width：auto）的时候，负margin-left/margin-right会增加元素的宽度;
+2. margin-top为负值不会增加高度，只会产生向上位移;
+3. margin-bottom为负值不会产生位移，会减少自身的供css读取的高
+	
+	如图：
+		![](http://upload-images.jianshu.io/upload_images/1429373-f5c277c9179cbe4b.png?imageMogr2/auto-orient/strip%7CimageView2/2)
+
+
+### 对文档流的影响
+元素如果用了margin-left:-20px;元素自身会向左偏移20px，
+与定位（position：relative）的区别：
+在position：relative后面的元素会补位，也就是后面的行内元素会紧贴在此元素的之后。
+
+**结论：**不脱离文档流不使用float的话，负margin元素是不会破坏页面的文档流。
+
+### 对浮动元素的影响
+负margin会改变浮动元素的显示位置，即使元素在DOM结构中处在后面，margin负值也能让它显示在最前面。圣杯布局、双飞翼布局，都是利用这个原理实现的。
+
+### 对绝对定位的影响
+实现块状元素的上下左右居中
+
+## 利用 负值margin 的常见布局
+### 双飞翼：左右固定，中间自适应
+双飞翼的好处：
+1. 可以让主要内容出现在dom结构的前面，现将主要内容渲染
+2. 中间只适应，两边固定宽度的效果
+	
+		<div class="main">
+	        <div class="main-content">main content</div>
+		</div>
+		<div class="left">left</div>
+		<div class="right">right</div>
+
+
+	    *{
+	        margin:0;
+	        padding: 0
+	    }
+	    .main{
+	        float: left;
+	        width: 100%;
+	    }
+	    .main .main-content{
+	        margin: 0 210px;
+	        background-color: rgba(33, 114, 214, 0.8);
+	        height: 500px
+	    }
+	    .left{
+	        width: 200px;
+	        float: left;
+	        background-color: rgba(255, 82, 0, 0.8);
+	        margin-left: -100%;
+	        height: 200px
+	    }
+	    .right{
+	        width: 200px;
+	        height: 200px;
+	        margin-left: -200px;
+	        float: left;
+	        background-color: rgba(90, 243, 151, 0.8);
+	    }
+
+### 去除列表右边框   
+
+	<div class="container">
+	    <ul class="list">
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	        <li>我是一个列表</li>
+	    </ul>
+	</div>
+
+	.container{
+	        margin:0 auto;
+	        width: 500px;
+	        border: 1px #ccc solid;
+	        margin-bottom: 20px;
+	}
+	.list{
+	    overflow: hidden;
+	    margin-right: -10px;
+	}
+	.list li{
+	    width:92px;
+	    height: 92px;
+	    background-color: #ccc;
+	    margin-bottom: 20px;
+	    float: left;
+	    margin-right: 10px;
+	}
+
+
+	计算公式：
+	假设一横列展示的数量为x，元素见的间距为y，父距宽度z
+	则元素的宽度＝（z－y（x－1））/x
+
+### 去除列表最后一个li元素的border-bottom
+用li标签来模拟表格，再给li标签添加下边距的时候，最后一个li标签表格会和父元素的边框靠在一起，会显得整个“table”的底部边框会比其他的边粗一些！
+
+   如图：
+
+   ![](http://upload-images.jianshu.io/upload_images/1429373-4a4f255190aab55c.png?imageMogr2/auto-orient/strip%7CimageView2/2)
+
+    <style>
+    ul.table{
+        border:1px #ccc solid;
+        margin-top:100px;
+    }
+    ul.table li{
+        border-bottom: 1px #ccc solid;
+        list-style: none;
+        margin-bottom: -1px; <!-- 添加margin-bottom：-1px即可 -->
+    }
+    </style>
+    <ul class="table"> 
+        <li>I am li</li>
+        <li>I am li</li>
+        <li>I am li</li>
+        <li>I am li</li>
+        <li>I am li</li>
+    </ul>
+
+### 多列等高
+利用margin-bottom为负值会减少css读取元素高度的特性，加上padding-bottom和overflow:hidden,就能做一个未知高度的多列等高布局
+
+	<style>
+	    .container{
+	        margin:0 auto;
+	        width: 100%;
+	        overflow: hidden;
+	    }
+	    .left{
+	        height: 50px;
+	        width: 33.33%;
+	        margin-bottom: -5000px;
+	        padding-bottom: 5000px;
+	        float: left;
+	        background-color: rgba(33, 114, 214, 0.8);
+	    }
+	    .main{
+	        height:100px;
+	        margin-bottom: -5000px;
+	        width: 33.33%;
+	        float: left;
+	        padding-bottom: 5000px;
+	        background-color: rgba(255, 82, 0, 0.8);
+	    }
+	    .right{
+	        width: 33.33%;
+	        float: left;
+	        margin-bottom: -5000px;
+	        padding-bottom: 5000px;
+	        background-color: rgba(90, 243, 151, 0.8)
+	    }
+	</style>
+	<div class="container">
+	    <div class="left"> height:50px</div>
+	    <div class="main">height:100px</div>
+	    <div class="right">height:30px</div>
+	</div>
+
+
+
+
+
+#### 参考资料
+[琦乐无穷 ](http://www.jianshu.com/p/549aaa5fabaa#)
